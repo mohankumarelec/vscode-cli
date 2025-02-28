@@ -43,8 +43,14 @@ jobs:
       - name: Upload CLI Binary Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: linux-${{ matrix.arch }}-cli
+          name: linux-${{ matrix.arch }}-zip
           path: ${{ github.workspace }}/repository/cli
+
+      - name: Upload CLI Binary Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.arch }}-cli
+          path: ${{ github.workspace }}/repository/cli/target/${{ matrix.rust_target }}/release/code
 
       # - name: Rename CLI Binary
       #   working-directory: ${{ github.workspace }}/repository/cli
@@ -55,3 +61,5 @@ jobs:
       #   with:
       #     name: linux-${{ matrix.arch }}-cli
       #     path: ${{ github.workspace }}/repository/cli/linux-${{ matrix.arch }}-cli
+
+
