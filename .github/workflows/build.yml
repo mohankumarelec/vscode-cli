@@ -5,6 +5,9 @@ on: [push, pull_request]
 permissions:
   contents: write
 
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
   linux_build:
     runs-on: ${{ matrix.runner }}
@@ -39,7 +42,7 @@ jobs:
 
       - name: Rename CLI Binary
         working-directory: ${{ github.workspace }}/repository/cli
-        run: mv target/release/code linux-${{ matrix.arch }}-cli
+        run: mv ./target/release/code linux-${{ matrix.arch }}-cli
 
       - name: Upload CLI Binary Artifact
         uses: actions/upload-artifact@v4
