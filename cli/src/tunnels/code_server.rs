@@ -411,81 +411,83 @@ impl<'a> ServerBuilder<'a> {
 			"Installing and setting up {}...", QUALITYLESS_SERVER_NAME
 		);
 
-		let name = get_server_folder_name(
-			self.server_params.release.quality,
-			&self.server_params.release.commit,
-		);
+		// let name = get_server_folder_name(
+		// 	self.server_params.release.quality,
+		// 	&self.server_params.release.commit,
+		// );
 
-		// Check if the server is already installed
-		if self.launcher_paths.server_cache.exists(&name).is_some() {
-			debug!(
-				self.logger,
-				"Server already installed, skipping installation"
-			);
-			return Ok(());
-		}
+		return Ok(());
 
-		let result = self
-			.launcher_paths
-			.server_cache
-			.create(name, |target_dir| async move {
-				let tmpdir =
-					tempfile::tempdir().map_err(|e| wrap(e, "error creating temp download dir"))?;
+		// // Check if the server is already installed
+		// if self.launcher_paths.server_cache.exists(&name).is_some() {
+		// 	debug!(
+		// 		self.logger,
+		// 		"Server already installed, skipping installation"
+		// 	);
+		// 	return Ok(());
+		// }
 
-				let update_service = UpdateService::new(self.logger.clone(), self.http.clone());
-				let response = update_service
-					.get_download_stream(&self.server_params.release)
-					.await?;
-				let archive_path = tmpdir.path().join(response.url_path_basename().unwrap());
+		// let result = self
+		// 	.launcher_paths
+		// 	.server_cache
+		// 	.create(name, |target_dir| async move {
+		// 		let tmpdir =
+		// 			tempfile::tempdir().map_err(|e| wrap(e, "error creating temp download dir"))?;
 
-				info!(
-					self.logger,
-					"Downloading {} server -> {}",
-					QUALITYLESS_PRODUCT_NAME,
-					archive_path.display()
-				);
+		// 		let update_service = UpdateService::new(self.logger.clone(), self.http.clone());
+		// 		let response = update_service
+		// 			.get_download_stream(&self.server_params.release)
+		// 			.await?;
+		// 		let archive_path = tmpdir.path().join(response.url_path_basename().unwrap());
 
-				http::download_into_file(
-					&archive_path,
-					self.logger.get_download_logger("server download progress:"),
-					response,
-				)
-				.await?;
+		// 		info!(
+		// 			self.logger,
+		// 			"Downloading {} server -> {}",
+		// 			QUALITYLESS_PRODUCT_NAME,
+		// 			archive_path.display()
+		// 		);
 
-				let server_dir = target_dir.join(SERVER_FOLDER_NAME);
-				unzip_downloaded_release(
-					&archive_path,
-					&server_dir,
-					self.logger.get_download_logger("server inflate progress:"),
-				)?;
+		// 		http::download_into_file(
+		// 			&archive_path,
+		// 			self.logger.get_download_logger("server download progress:"),
+		// 			response,
+		// 		)
+		// 		.await?;
 
-				if !skip_requirements_check().await {
-					let output = capture_command_and_check_status(
-						server_dir
-							.join("bin")
-							.join(self.server_params.release.quality.server_entrypoint()),
-						&["--version"],
-					)
-					.await
-					.map_err(|e| wrap(e, "error checking server integrity"))?;
+		// 		let server_dir = target_dir.join(SERVER_FOLDER_NAME);
+		// 		unzip_downloaded_release(
+		// 			&archive_path,
+		// 			&server_dir,
+		// 			self.logger.get_download_logger("server inflate progress:"),
+		// 		)?;
 
-					trace!(
-						self.logger,
-						"Server integrity verified, version: {}",
-						String::from_utf8_lossy(&output.stdout).replace('\n', " / ")
-					);
-				} else {
-					info!(self.logger, "Skipping server integrity check");
-				}
+		// 		if !skip_requirements_check().await {
+		// 			let output = capture_command_and_check_status(
+		// 				server_dir
+		// 					.join("bin")
+		// 					.join(self.server_params.release.quality.server_entrypoint()),
+		// 				&["--version"],
+		// 			)
+		// 			.await
+		// 			.map_err(|e| wrap(e, "error checking server integrity"))?;
 
-				Ok(())
-			})
-			.await;
+		// 			trace!(
+		// 				self.logger,
+		// 				"Server integrity verified, version: {}",
+		// 				String::from_utf8_lossy(&output.stdout).replace('\n', " / ")
+		// 			);
+		// 		} else {
+		// 			info!(self.logger, "Skipping server integrity check");
+		// 		}
 
-		if let Err(e) = result {
-			error!(self.logger, "Error installing server: {}", e);
-			return Err(e);
-		}
+		// 		Ok(())
+		// 	})
+		// 	.await;
+
+		// if let Err(e) = result {
+		// 	error!(self.logger, "Error installing server: {}", e);
+		// 	return Err(e);
+		// }
 
 		debug!(self.logger, "Server setup complete");
 
