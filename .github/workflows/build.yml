@@ -36,16 +36,22 @@ jobs:
       - name: Add Rust Target
         run: rustup target add ${{ matrix.rust_target }}
 
-      - name: Build CLI
-        working-directory: ${{ github.workspace }}/repository/cli
-        run: cargo build --release --target ${{ matrix.rust_target }}
-
-      - name: Rename CLI Binary
-        working-directory: ${{ github.workspace }}/repository/cli
-        run: mv ./target/release/code linux-${{ matrix.arch }}-cli
+      # - name: Build CLI
+      #   working-directory: ${{ github.workspace }}/repository/cli
+      #   run: cargo build --release --target ${{ matrix.rust_target }}
 
       - name: Upload CLI Binary Artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-${{ matrix.arch }}-cli
-          path: ${{ github.workspace }}/repository/cli/linux-${{ matrix.arch }}-cli
+          path: ${{ github.workspace }}/repository/cli
+
+      # - name: Rename CLI Binary
+      #   working-directory: ${{ github.workspace }}/repository/cli
+      #   run: mv ./target/release/code linux-${{ matrix.arch }}-cli
+
+      # - name: Upload CLI Binary Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: linux-${{ matrix.arch }}-cli
+      #     path: ${{ github.workspace }}/repository/cli/linux-${{ matrix.arch }}-cli
