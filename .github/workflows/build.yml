@@ -36,9 +36,9 @@ jobs:
       - name: Add Rust Target
         run: rustup target add ${{ matrix.rust_target }}
 
-      # - name: Build CLI
-      #   working-directory: ${{ github.workspace }}/repository/cli
-      #   run: cargo build --release --target ${{ matrix.rust_target }}
+      - name: Build CLI
+        working-directory: ${{ github.workspace }}/repository/cli
+        run: cargo build --release --target ${{ matrix.rust_target }}
 
       - name: Upload CLI Binary Artifact
         uses: actions/upload-artifact@v4
