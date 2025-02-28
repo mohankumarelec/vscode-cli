@@ -51,6 +51,8 @@ impl Quality {
 			server_name.push_str(".cmd");
 		}
 
+		server_name = "code-server-oss".to_string();
+
 		server_name
 	}
 }
