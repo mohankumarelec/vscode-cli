@@ -411,11 +411,19 @@ impl<'a> ServerBuilder<'a> {
 			"Installing and setting up {}...", QUALITYLESS_SERVER_NAME
 		);
 
-		let update_service = UpdateService::new(self.logger.clone(), self.http.clone());
 		let name = get_server_folder_name(
 			self.server_params.release.quality,
 			&self.server_params.release.commit,
 		);
+
+		// Check if the server is already installed
+		if self.launcher_paths.server_cache.exists(&name).is_some() {
+			debug!(
+				self.logger,
+				"Server already installed, skipping installation"
+			);
+			return Ok(());
+		}
 
 		let result = self
 			.launcher_paths
@@ -424,6 +432,7 @@ impl<'a> ServerBuilder<'a> {
 				let tmpdir =
 					tempfile::tempdir().map_err(|e| wrap(e, "error creating temp download dir"))?;
 
+				let update_service = UpdateService::new(self.logger.clone(), self.http.clone());
 				let response = update_service
 					.get_download_stream(&self.server_params.release)
 					.await?;
